@@ -1,0 +1,19 @@
+.search-panel {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.search-panel > div {
+  margin: 15px 10px;
+}
+
+.search-input {
+  min-width: 250px;
+  width: 400px;
+}
+
+.search-button {
+  display: flex;
+  align-items: center;
+}
