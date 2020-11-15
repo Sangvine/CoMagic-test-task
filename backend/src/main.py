@@ -6,13 +6,14 @@ import re
 
 async def fetch_get_sites(token=None):
     url = 'https://dataapi.comagic.ru/v2.0'
+    _token = token if token else "vy7m6ggz45gek4xrxc4i0mvof0gjoemys2efze8n"
     headers = {'Content-Type': 'application/json; charset=UTF-8'}
     json = {
         "jsonrpc": "2.0",
         "id": "0",
         "method": "get.sites",
         "params": {
-            "access_token": "vy7m6ggz45gek4xrxc4i0mvof0gjoemys2efze8n",
+            "access_token": _token,
         }
     }
     async with aiohttp.ClientSession() as client:
@@ -40,11 +41,18 @@ async def hello(request):
 
 
 async def get_sites(request):
-    data = await fetch_get_sites()
+    data = await fetch_get_sites(request.rel_url.query.get('token', ''))
+
     result = []
-    for item in data["result"]["data"]:
-        result.append({"site_key": item["site_key"],
-                       "domain_name": item["domain_name"]})
+    if data.get("result", {}).get("data", None):
+        for item in data["result"]["data"]:
+            result.append({"site_key": item["site_key"],
+                           "domain_name": item["domain_name"]})
+    elif data["error"]:
+        result.append({"error": data["error"]})
+    else:
+        result.append("error")
+
     return web.json_response(result)
 
 
