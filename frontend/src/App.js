@@ -11,7 +11,7 @@ function App() {
     <div>
       <Header></Header>
       <Search getSites={(sites) => setSites(sites)}></Search>
-      <Content sites={sites}></Content>
+      {sites.length > 0 ? <Content sites={sites}></Content> : null}
     </div>
   );
 }
