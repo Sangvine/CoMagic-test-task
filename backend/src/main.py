@@ -26,18 +26,10 @@ async def fetch_site_details(url):
     async with aiohttp.ClientSession() as client:
         try:
             async with client.get(url) as resp:
-                assert resp.status == 200, "страница не отвечает"
-                return await resp.text()
-        except AssertionError as error:
-            print(error.args[0])
-            return ""
+                text = await resp.text()
+                return {"response_code": resp.status, "text": text}
         except:
-            return "404"
-
-
-async def hello(request):
-    text = "Hello, world!"
-    return web.Response(text=text)
+            return {"response_code": "Сайт не доступен"}
 
 
 async def get_sites(request):
@@ -58,18 +50,23 @@ async def get_sites(request):
 
 async def get_site_details(request):
     site_key = request.rel_url.query.get('site_key', '')
-    cs_min = "cs.min.js"
     domain_name = request.rel_url.query.get('domain_name', '')
-    text = await fetch_site_details("http://" + domain_name + "/")
-    is_cs_min = re.search(cs_min, text)
-    is_site_key = re.search(site_key, text)
-    result = {"404": "false", "cs.min.js": bool(is_cs_min),
-              "is_site_key": bool(is_site_key)}
+    request_results = await fetch_site_details("http://" + domain_name + "/")
+    response_code = request_results["response_code"]
+    if "text" in request_results:
+        text = request_results["text"]
+        is_js_file = re.search("cs.min.js", text)
+        is_site_key = re.search(site_key, text)
+        result = {"responseCode": response_code, "isJsFile": bool(is_js_file),
+                  "isSiteKey": bool(is_site_key)}
+    else:
+        result = {"responseCode": response_code, "isJsFile": None,
+                  "isSiteKey": None}
     return web.json_response(result)
 
+
 app = web.Application()
-routes = [web.get('/', hello),
-          web.get('/api/get_sites', get_sites),
+routes = [web.get('/api/get_sites', get_sites),
           web.get('/api/get_site_details', get_site_details)
           ]
 

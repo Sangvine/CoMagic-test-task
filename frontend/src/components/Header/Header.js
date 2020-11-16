@@ -4,7 +4,7 @@ function Header() {
   return (
     <AppBar position="static">
       <Toolbar color="primary">
-        <Typography variant="title" color="inherit">
+        <Typography variant="subtitle1" color="inherit">
           Сервис проверки кода вставки
         </Typography>
       </Toolbar>
