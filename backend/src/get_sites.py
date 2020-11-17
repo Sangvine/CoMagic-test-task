@@ -15,5 +15,4 @@ async def fetch_sites(token):
     }
     async with aiohttp.ClientSession() as client:
         async with client.post(url, headers=headers, json=json) as resp:
-            assert resp.status == 200
             return await resp.json()
