@@ -20,10 +20,10 @@ function Search(props) {
     let response = await fetch(`${API_URL}/get_sites?token=${searchText}`);
     if (response.ok) {
       let result = await response.json();
-      if (result[0].error?.message) {
-        handleOpen(result[0].error?.message);
+      if (result.error?.message) {
+        handleOpen(result.error?.message);
         return [];
-      } else return result;
+      } else return result["result"];
     } else {
       console.error(response.status);
     }

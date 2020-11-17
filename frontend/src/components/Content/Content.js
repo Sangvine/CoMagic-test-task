@@ -52,9 +52,10 @@ export default function Content(props) {
       setSites((state) =>
         state.map((row) => {
           if (row.site_key === siteKey) {
-            row.responseCode = result["responseCode"];
-            row.siteKey = result["isSiteKey"] ? <DoneIcon /> : <ClearIcon />;
-            row.csMinJs = result["isJsFile"] ? <DoneIcon /> : <ClearIcon />;
+            let data = result["result"];
+            row.responseCode = data["responseCode"];
+            row.siteKey = data["isSiteKey"] ? <DoneIcon /> : <ClearIcon />;
+            row.csMinJs = data["isJsFile"] ? <DoneIcon /> : <ClearIcon />;
             row.inProgress = false;
           }
           return row;
@@ -79,7 +80,7 @@ export default function Content(props) {
 
   return (
     <div className={classes.tableContainer}>
-      <Paper className={classes.root}>
+      <Paper>
         <TableContainer className={classes.container}>
           <Table
             stickyHeader
