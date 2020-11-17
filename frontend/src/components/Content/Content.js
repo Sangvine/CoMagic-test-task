@@ -117,7 +117,7 @@ export default function Content(props) {
               ).map((row) => {
                 return (
                   <TableRow key={row.site_key}>
-                    <TableCell component="th" scope="row">
+                    <TableCell width="30%" component="th" scope="row">
                       <a
                         target="_blank"
                         rel="noreferrer"
