@@ -1,10 +1,13 @@
 import { Button, TextField } from "@material-ui/core";
 import { useRef, useState } from "react";
-import { API_URL } from "../../constants";
+import { API_URL } from "../../service/constants";
+
 import CustomModal from "../../ui/modal/CustomModal";
 import "./Search.css";
 
 function Search(props) {
+  const [open, setOpen] = useState(false);
+  const [modalText, setModalText] = useState();
   const searchText = useRef(null);
 
   const handleSearch = async () => {
@@ -14,6 +17,15 @@ function Search(props) {
       return row;
     });
     props.getSites(result);
+  };
+
+  const handleOpen = (text) => {
+    setModalText(text);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const fetchSites = async (searchText) => {
@@ -27,17 +39,6 @@ function Search(props) {
     } else {
       console.error(response.status);
     }
-  };
-  const [open, setOpen] = useState(false);
-  const [modalText, setModalText] = useState();
-
-  const handleOpen = (text) => {
-    setModalText(text);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   return (

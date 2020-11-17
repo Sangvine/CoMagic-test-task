@@ -8,10 +8,11 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { Box, Button, TablePagination } from "@material-ui/core";
-import { API_URL } from "../../constants";
+
 import CustomTablePaginationActions from "../../ui/table/CustomPaginationActions";
 import ClearIcon from "@material-ui/icons/Clear";
 import DoneIcon from "@material-ui/icons/Done";
+import { API_URL } from "../../service/constants";
 
 const useStyles = makeStyles({
   tableContainer: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles({
 export default function Content(props) {
   const [sites, setSites] = useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(15);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const classes = useStyles();
 
   useEffect(() => {
