@@ -2,39 +2,12 @@ import aiohttp
 from aiohttp import web
 import asyncio
 import re
-
-
-async def fetch_get_sites(token=None):
-    url = 'https://dataapi.comagic.ru/v2.0'
-    _token = token if token else "vy7m6ggz45gek4xrxc4i0mvof0gjoemys2efze8n"
-    headers = {'Content-Type': 'application/json; charset=UTF-8'}
-    json = {
-        "jsonrpc": "2.0",
-        "id": "0",
-        "method": "get.sites",
-        "params": {
-            "access_token": _token,
-        }
-    }
-    async with aiohttp.ClientSession() as client:
-        async with client.post(url, headers=headers, json=json) as resp:
-            assert resp.status == 200
-            return await resp.json()
-
-
-async def fetch_site_details(url):
-    async with aiohttp.ClientSession() as client:
-        try:
-            async with client.get(url) as resp:
-                text = await resp.text()
-                return {"response_code": resp.status, "text": text}
-        except:
-            return {"response_code": "Сайт не доступен"}
+from get_sites import fetch_sites
+from get_site_details import fetch_site_details
 
 
 async def get_sites(request):
-    data = await fetch_get_sites(request.rel_url.query.get('token', ''))
-
+    data = await fetch_sites(request.rel_url.query.get('token', ''))
     result = []
     if data.get("result", {}).get("data", None):
         for item in data["result"]["data"]:
@@ -43,8 +16,7 @@ async def get_sites(request):
     elif data["error"]:
         result.append({"error": data["error"]})
     else:
-        result.append("error")
-
+        result.append({"error": "Необработанное исключение"})
     return web.json_response(result)
 
 
