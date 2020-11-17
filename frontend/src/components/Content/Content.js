@@ -27,6 +27,8 @@ const useStyles = makeStyles({
 
 export default function Content(props) {
   const [sites, setSites] = useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const classes = useStyles();
 
   useEffect(() => {
@@ -62,9 +64,6 @@ export default function Content(props) {
       console.error(response.status);
     }
   };
-
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, sites.length - page * rowsPerPage);

@@ -1,6 +1,7 @@
 import { Button, TextField } from "@material-ui/core";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { API_URL } from "../../constants";
+import CustomModal from "../../ui/modal/CustomModal";
 import "./Search.css";
 
 function Search(props) {
@@ -18,10 +19,25 @@ function Search(props) {
   const fetchSites = async (searchText) => {
     let response = await fetch(`${API_URL}/get_sites?token=${searchText}`);
     if (response.ok) {
-      return await response.json();
+      let result = await response.json();
+      if (result[0].error?.message) {
+        handleOpen(result[0].error?.message);
+        return [];
+      } else return result;
     } else {
       console.error(response.status);
     }
+  };
+  const [open, setOpen] = useState(false);
+  const [modalText, setModalText] = useState();
+
+  const handleOpen = (text) => {
+    setModalText(text);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -38,6 +54,11 @@ function Search(props) {
         <Button variant="contained" color="primary" onClick={handleSearch}>
           <span className="button-text">Загрузить сайты</span>
         </Button>
+        <CustomModal
+          open={open}
+          text={modalText}
+          close={handleClose}
+        ></CustomModal>
       </div>
     </div>
   );
