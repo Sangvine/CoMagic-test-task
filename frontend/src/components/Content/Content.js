@@ -34,6 +34,7 @@ export default function Content(props) {
 
   useEffect(() => {
     setSites(props.sites);
+    setPage(0);
   }, [props.sites]);
 
   const getSiteDetails = async (url, siteKey) => {
