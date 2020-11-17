@@ -7,16 +7,18 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { Button, TablePagination } from "@material-ui/core";
+import { Box, Button, TablePagination } from "@material-ui/core";
 import { API_URL } from "../../constants";
-import TablePaginationActions from "./TablePaginationActions";
+import CustomTablePaginationActions from "../../ui/table/CustomPaginationActions";
+import ClearIcon from "@material-ui/icons/Clear";
+import DoneIcon from "@material-ui/icons/Done";
 
 const useStyles = makeStyles({
   tableContainer: {
     margin: 20,
   },
   container: {
-    maxHeight: 700,
+    maxHeight: 670,
   },
   table: {
     minWidth: 150,
@@ -31,30 +33,7 @@ export default function Content(props) {
     setSites(props.sites);
   }, [props.sites]);
 
-  const getSiteDetails = async (url, site_key) => {
-    switchButton(site_key);
-    let response = await fetch(
-      `${API_URL}/get_site_details?domain_name=${url}&site_key=${site_key}`
-    );
-    if (response.ok) {
-      let result = await response.json();
-      setSites((state) =>
-        state.map((row) => {
-          if (row.site_key === site_key) {
-            row.responseCode = result["responseCode"];
-            row.siteKey = result["isSiteKey"] ? "+" : "-";
-            row.csMinJs = result["isJsFile"] ? "+" : "-";
-            row.inProgress = false;
-          }
-          return row;
-        })
-      );
-    } else {
-      console.error(response.status);
-    }
-  };
-
-  const switchButton = (siteKey) => {
+  const getSiteDetails = async (url, siteKey) => {
     setSites((state) =>
       state.map((row) => {
         if (row.site_key === siteKey) {
@@ -63,6 +42,25 @@ export default function Content(props) {
         return row;
       })
     );
+    let response = await fetch(
+      `${API_URL}/get_site_details?domain_name=${url}&site_key=${siteKey}`
+    );
+    if (response.ok) {
+      let result = await response.json();
+      setSites((state) =>
+        state.map((row) => {
+          if (row.site_key === siteKey) {
+            row.responseCode = result["responseCode"];
+            row.siteKey = result["isSiteKey"] ? <DoneIcon /> : <ClearIcon />;
+            row.csMinJs = result["isJsFile"] ? <DoneIcon /> : <ClearIcon />;
+            row.inProgress = false;
+          }
+          return row;
+        })
+      );
+    } else {
+      console.error(response.status);
+    }
   };
 
   const [page, setPage] = React.useState(0);
@@ -87,15 +85,25 @@ export default function Content(props) {
           <Table
             stickyHeader
             className={classes.table}
-            aria-label="simple table"
+            aria-label="Список сайтов"
           >
             <TableHead>
               <TableRow>
-                <TableCell>Название сайта</TableCell>
-                <TableCell align="right">Проверить сайт</TableCell>
-                <TableCell align="right">Код ответа</TableCell>
-                <TableCell align="right">Наличие site_key</TableCell>
-                <TableCell align="right">Наличие cs.min.js</TableCell>
+                <TableCell>
+                  <Box fontWeight="fontWeightBold">Название сайта</Box>
+                </TableCell>
+                <TableCell align="center">
+                  <Box fontWeight="fontWeightBold">Проверить сайт</Box>
+                </TableCell>
+                <TableCell align="center">
+                  <Box fontWeight="fontWeightBold">Код ответа</Box>
+                </TableCell>
+                <TableCell align="center">
+                  <Box fontWeight="fontWeightBold">Наличие site_key</Box>
+                </TableCell>
+                <TableCell align="center">
+                  <Box fontWeight="fontWeightBold">Наличие cs.min.js</Box>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -117,7 +125,7 @@ export default function Content(props) {
                         {row.domain_name}
                       </a>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell align="center">
                       <Button
                         variant="contained"
                         size="small"
@@ -129,9 +137,9 @@ export default function Content(props) {
                         <span className="button-text">Проверка кода</span>
                       </Button>
                     </TableCell>
-                    <TableCell align="right">{row.responseCode}</TableCell>
-                    <TableCell align="right">{row.siteKey}</TableCell>
-                    <TableCell align="right">{row.csMinJs}</TableCell>
+                    <TableCell align="center">{row.responseCode}</TableCell>
+                    <TableCell align="center">{row.siteKey}</TableCell>
+                    <TableCell align="center">{row.csMinJs}</TableCell>
                   </TableRow>
                 );
               })}
@@ -159,7 +167,7 @@ export default function Content(props) {
           }}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
-          ActionsComponent={TablePaginationActions}
+          ActionsComponent={CustomTablePaginationActions}
         />
       </Paper>
     </div>
